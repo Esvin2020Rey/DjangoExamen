@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
-from preguntas.models import Usuario
+from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Usuario
-        fields = ('usuario',)
+        model = User
+        fields = ('username',)
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -22,10 +22,9 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         payload = jwt_payload_handler(obj)
         token = jwt_encode_handler(payload)
         return token
-#5555555
-#22525
+
     def create(self, validated_data):
-        password = validated_data.pop('contrasenia', None)
+        password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
@@ -33,5 +32,5 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         return instance
 
     class Meta:
-        model = Usuario
-        fields = ('token', 'usuario', 'contrasenia')
+        model = User
+        fields = ('token', 'username', 'password')
